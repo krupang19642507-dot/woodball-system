@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการการแข่งขัน Woodball</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- หน้าแรก - เมนู -->
+        <div id="menuPage" class="page active">
+            <div class="container">
+                <div class="logo-box">
+                    <h1>🌲 WOODBALL SYSTEM 🌲</h1>
+                    <p>ระบบจัดการการแข่งขัน Woodball</p>
+                </div>
+                
+                <div class="menu-buttons">
+                    <button class="btn btn-primary" onclick="goToPage('registerPage')">
+                        📝 ลงทะเบียนผู้ใช้ระบบ
+                    </button>
+                    <button class="btn btn-success" onclick="goToPage('scoreCardPage')">
+                        🎯 กรอกคะแนน Score Card
+                    </button>
+                    <button class="btn btn-info" onclick="goToPage('resultsPage')">
+                        🏆 ดูผลการแข่งขัน
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าลงทะเบียน -->
+        <div id="registerPage" class="page">
+            <div class="container">
+                <h2>📝 ลงทะเบียนผู้ใช้ระบบ</h2>
+                <form id="registerForm" class="form-box">
+                    <div class="form-group">
+                        <label for="devName">ชื่อ-สกุล ผู้พัฒนาระบบ:</label>
+                        <input type="text" id="devName" placeholder="เช่น นายชัยวัฒน์ สมใจ" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="devPhone">หมายเลขโทรศัพท์:</label>
+                        <input type="tel" id="devPhone" placeholder="เช่น 08X-XXXX-XXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventName">ชื่อกิจกรรมการแข่งขัน:</label>
+                        <input type="text" id="eventName" placeholder="เช่น การแข่งขัน Woodball ประจำปี 2567" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventVenue">สถานที่จัดกิจกรรม:</label>
+                        <input type="text" id="eventVenue" placeholder="เช่น สนาม Woodball จังหวัรราช" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDate">วันที่จัดกิจกรรม:</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">✓ บันทึกข้อมูล</button>
+                    <button type="button" class="btn btn-secondary" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                </form>
+                <div id="registerMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- หน้า Score Card -->
+        <div id="scoreCardPage" class="page">
+            <div class="container">
+                <h2>🎯 กรอกคะแนน WOODBALL SCORE CARD</h2>
+                
+                <form id="scoreCardForm" class="form-box">
+                    <div class="form-group">
+                        <label for="playerCount">จำนวนผู้เล่น (2-12 คน):</label>
+                        <div class="input-group">
+                            <input type="number" id="playerCount" min="2" max="12" value="4" required>
+                            <button type="button" class="btn btn-small" onclick="generatePlayerInputs()">สร้างฟอร์ม</button>
+                        </div>
+                    </div>
+
+                    <div id="playerNamesContainer" class="player-names-grid"></div>
+
+                    <h3>กรอกคะแนนต่อ Gate (ประตู)</h3>
+                    <table id="scoreTable" class="score-table">
+                        <thead>
+                            <tr>
+                                <th>Gate</th>
+                                <th>Par</th>
+                                <th>ระยะ (m)</th>
+                                <th id="playerColsHeader"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="scoreTableBody"></tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-primary">💾 บันทึกคะแนน</button>
+                    <button type="button" class="btn btn-secondary" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                </form>
+
+                <div id="scoreMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- หน้าผลการแข่งขัน -->
+        <div id="resultsPage" class="page">
+            <div class="container">
+                <h2>🏆 ผลการแข่งขัน WOODBALL</h2>
+                
+                <div id="eventInfoDisplay" class="event-info"></div>
+                
+                <button class="btn btn-primary" onclick="sortAndDisplayResults()">🔄 อัปเดตผลการแข่งขัน</button>
+                
+                <div id="resultsContainer" class="results-container">
+                    <table id="resultsTable" class="results-table">
+                        <thead>
+                            <tr>
+                                <th>อันดับ</th>
+                                <th>ชื่อผู้เล่น</th>
+                                <th>คะแนนรวม</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-info" onclick="exportToCSV()">📊 ดาวน์โหลด Excel</button>
+                    <button class="btn btn-warning" onclick="printResults()">🖨️ พิมพ์ผลลัพธ์</button>
+                    <button class="btn btn-secondary" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                </div>
+
+                <div id="resultsMessage" class="message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/message" id="whatsappBtn" class="whatsapp-btn" title="ติดต่อ WhatsApp">
+        <span>💬</span>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>
