@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Woodball">
+    <meta name="theme-color" content="#2ecc71">
+    <title>🌲 WOODBALL SYSTEM v2.0</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+        :root {
+            --primary: #2ecc71; --secondary: #3498db; --success: #27ae60; --info: #16a085;
+            --warning: #f39c12; --danger: #e74c3c; --dark: #2c3e50; --text: #333;
+            --border: #bdc3c7; --light: #ecf0f1; --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: var(--text); overflow-x: hidden; }
+        body { min-height: 100vh; padding-bottom: 80px; }
+        #app { width: 100%; min-height: 100vh; }
+
+        /* Navbar */
+        .navbar { position: sticky; top: 0; z-index: 999; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 12px 15px; box-shadow: var(--shadow); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; color: white; font-weight: bold; font-size: 1.1rem; }
+        .logo-icon { font-size: 1.5rem; }
+        .nav-menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 1.2rem; }
+
+        /* Pages */
+        .page { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+
+        /* Hero */
+        .hero { background: white; border-radius: 16px; padding: 30px 20px; text-align: center; box-shadow: var(--shadow); margin-bottom: 20px; }
+        .hero h1 { color: var(--primary); font-size: 2rem; margin-bottom: 10px; }
+        .hero p { color: #666; font-size: 1rem; margin-bottom: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .stat-box { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; padding: 15px; border-radius: 10px; }
+        .stat-num { font-size: 1.5rem; font-weight: bold; }
+        .stat-label { font-size: 0.8rem; opacity: 0.9; }
+
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .menu-card { background: white; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: all 0.2s; }
+        .menu-card:active { transform: scale(0.95); }
+        .menu-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .menu-card h3 { color: var(--primary); font-size: 1rem; margin-bottom: 5px; }
+        .menu-card p { color: #666; font-size: 0.85rem; }
+
+        /* Forms */
+        .form-wrapper { background: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); background: #f0f8f5; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        fieldset { border: 2px solid var(--light); border-radius: 10px; padding: 12px; margin-bottom: 15px; background: #f8f9fa; }
+        legend { color: var(--primary); font-weight: 600; padding: 0 8px; }
+
+        /* Buttons */
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-large { width: 100%; padding: 15px; font-size: 1.1rem; }
+        .btn-small { padding: 8px 12px; font-size: 0.85rem; }
+        .form-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+
+        /* Tables */
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; margin-bottom: 15px; }
+        .table-pro { width: 100%; border-collapse: collapse; background: white; box-shadow: var(--shadow); font-size: 0.9rem; }
+        .table-pro th { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 12px; text-align: center; font-weight: 600; }
+        .table-pro td { padding: 10px; border: 1px solid #ecf0f1; text-align: center; }
+        .table-pro input[type="number"] { width: 100%; max-width: 60px; padding: 6px; border: 1px solid var(--border); border-radius: 4px; }
+        .rank-1 { background: #fff3cd; font-weight: bold; }
+        .rank-2 { background: #f0f0f0; font-weight: bold; }
+        .rank-3 { background: #ffe4d6; font-weight: bold; }
+
+        /* Score Setup */
+        .score-setup { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); }
+        .setup-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .setup-controls input { width: 60px; padding: 10px; border: 2px solid var(--border); border-radius: 6px; text-align: center; font-weight: bold; }
+        .btn-num { width: 40px; height: 40px; padding: 0; background: var(--secondary); color: white; border: none; border-radius: 6px; font-size: 1.2rem; cursor: pointer; }
+        .btn-num:active { background: #2980b9; }
+
+        /* Player Grid */
+        .player-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .player-input-group label { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
+        .player-input-group input { padding: 10px; border: 2px solid var(--border); border-radius: 6px; }
+
+        /* Podium */
+        .podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .podium-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: var(--shadow); }
+        .podium-card.gold { background: linear-gradient(135deg, #ffd700, #ffed4e); border: 3px solid #ffd700; }
+        .podium-card.silver { background: linear-gradient(135deg, #c0c0c0, #e8e8e8); border: 3px solid #c0c0c0; }
+        .podium-card.bronze { background: linear-gradient(135deg, #cd7f32, #e8a76d); border: 3px solid #cd7f32; }
+        .podium-card .medal { font-size: 3rem; margin-bottom: 10px; }
+        .podium-card .name { font-weight: bold; font-size: 1.1rem; margin: 10px 0; color: var(--dark); }
+        .podium-card .score { font-size: 1.2rem; color: var(--primary); font-weight: bold; }
+
+        /* Event Info */
+        .event-info { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow); }
+        .event-info p { margin: 8px 0; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 15px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; padding: 12px 20px; font-size: 1rem; cursor: pointer; color: #666; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Message */
+        .message { padding: 15px; border-radius: 8px; margin-bottom: 15px; display: none; border-left: 4px solid; animation: slideIn 0.3s ease; }
+        .message.show { display: block; }
+        .message.success { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .message.error { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+        .message.info { background: #d1ecf1; color: #0c5460; border-color: #bee5eb; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Back Button */
+        .btn-back { background: #95a5a6; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
+
+        /* Floating Buttons */
+        .float-btn { position: fixed; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow); border: none; cursor: pointer; z-index: 900; transition: all 0.3s; }
+        .float-btn:active { transform: scale(0.9); }
+        #whatsappBtn { bottom: 80px; right: 15px; background: #25d366; color: white; font-size: 1.8rem; }
+        #scrollTopBtn { bottom: 15px; right: 15px; background: var(--primary); color: white; font-size: 1.5rem; display: none; }
+        #scrollTopBtn.show { display: flex; }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .hero { padding: 20px 15px; }
+            .hero h1 { font-size: 1.6rem; }
+            .stats { grid-template-columns: 1fr; }
+            .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .table-pro { font-size: 0.75rem; }
+            .podium { grid-template-columns: 1fr; }
+            .btn-large { padding: 12px; font-size: 1rem; }
+            body { padding-bottom: 100px; }
+        }
+
+        /* Print */
+        @media print {
+            .navbar, .btn-back, .float-btn, .form-actions { display: none; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🌲</span>
+                <span>WOODBALL v2.0</span>
+            </div>
+            <button class="nav-menu-btn" onclick="toggleMenu()">☰</button>
+        </div>
+    </nav>
+
+    <div id="app">
+        <!-- PAGE 1: MAIN MENU -->
+        <div id="menuPage" class="page active">
+            <div class="container">
+                <div class="hero">
+                    <h1>🏆 WOODBALL SYSTEM 🏆</h1>
+                    <p>ระบบจัดการการแข่งขัน Woodball<br>เวอร์ชันจัดค่ายจริง</p>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div class="stat-num" id="totalPlayers">0</div>
+                            <div class="stat-label">ผู้เล่น</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">12</div>
+                            <div class="stat-label">ประตู</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num" id="totalRecords">0</div>
+                            <div class="stat-label">บันทึก</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-grid">
+                    <div class="menu-card" onclick="goToPage('registerPage')">
+                        <div class="menu-icon">📝</div>
+                        <h3>ลงทะเบียน</h3>
+                        <p>ผู้ดูแล & กิจกรรม</p>
+                    </div>
+                    <div class="menu-card" onclick="goToPage('scoreCardPage')">
+                        <div class="menu-icon">🎯</div>
+                        <h3>กรอกคะแนน</h3>
+                        <p>Score Card</p>
+                    </div>
+                    <div class="menu-card" onclick="goToPage('resultsPage')">
+                        <div class="menu-icon">🏅</div>
+                        <h3>ผลการแข่งขัน</h3>
+                        <p>Leaderboard</p>
+                    </div>
+                    <div class="menu-card" onclick="goToPage('dataPage')">
+                        <div class="menu-icon">📊</div>
+                        <h3>จัดการข้อมูล</h3>
+                        <p>Data Manager</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: REGISTRATION -->
+        <div id="registerPage" class="page">
+            <div class="container">
+                <button class="btn-back" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                <div class="form-wrapper">
+                    <h2 style="color: var(--primary); margin-bottom: 20px;">📝 ลงทะเบียน</h2>
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <fieldset>
+                            <legend>👤 ข้อมูลผู้ดูแลระบบ</legend>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ชื่อ-สกุล *</label>
+                                    <input type="text" id="devName" placeholder="เช่น นายชัยวัฒน์" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>หมายเลขโทรศัพท์ *</label>
+                                    <input type="tel" id="devPhone" placeholder="08X-XXXX-XXXX" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>อีเมล (ไม่บังคับ)</label>
+                                <input type="email" id="devEmail" placeholder="example@email.com">
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>🎪 ข้อมูลการแข่งขัน</legend>
+                            <div class="form-group">
+                                <label>ชื่อกิจกรรม *</label>
+                                <input type="text" id="eventName" placeholder="เช่น การแข่งขัน Woodball ประจำปี 2567" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>สถานที่ *</label>
+                                    <input type="text" id="eventVenue" placeholder="เช่น สนาม Woodball" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>วันที่ *</label>
+                                    <input type="date" id="eventDate" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>หมวดหมู่</label>
+                                <select id="eventCategory">
+                                    <option value="">-- เลือก --</option>
+                                    <option value="ผู้บริหาร">👔 ผู้บริหาร</option>
+                                    <option value="พนักงาน">💼 พนักงาน</option>
+                                    <option value="นักเรียน">🎓 นักเรียน</option>
+                                    <option value="ทั่วไป">🎯 ทั่วไป</option>
+                                </select>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">✓ บันทึก</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="registerMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: SCORE CARD -->
+        <div id="scoreCardPage" class="page">
+            <div class="container">
+                <button class="btn-back" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                <div class="form-wrapper">
+                    <h2 style="color: var(--primary); margin-bottom: 20px;">🎯 กรอกคะแนน</h2>
+                    
+                    <div class="score-setup">
+                        <label style="display: block; margin-bottom: 10px; font-weight: 600;">จำนวนผู้เล่น (2-12 คน)</label>
+                        <div class="setup-controls">
+                            <button type="button" class="btn-num" onclick="decreasePlayer()">−</button>
+                            <input type="number" id="playerCount" min="2" max="12" value="4">
+                            <button type="button" class="btn-num" onclick="increasePlayer()">+</button>
+                            <button type="button" class="btn btn-success" onclick="generatePlayers()">🔄 สร้าง</button>
+                        </div>
+                    </div>
+
+                    <div id="playerNamesContainer" class="player-grid"></div>
+
+                    <h3 style="color: var(--primary); margin: 20px 0;">⛳ คะแนนต่อประตู</h3>
+                    <div class="table-wrapper">
+                        <table class="table-pro">
+                            <thead>
+                                <tr>
+                                    <th>Gate</th>
+                                    <th>Par</th>
+                                    <th>ระยะ (m)</th>
+                                    <th id="playerColsHeader"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="scoreTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-info" onclick="calculateTotals()">🧮 คำนวณ</button>
+                        <button type="button" class="btn btn-primary btn-large" onclick="submitScores()">💾 บันทึก</button>
+                    </div>
+                </div>
+                <div id="scoreMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: RESULTS -->
+        <div id="resultsPage" class="page">
+            <div class="container">
+                <button class="btn-back" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                
+                <div id="eventInfoDisplay" class="event-info" style="display: none;"></div>
+
+                <h2 style="color: var(--primary); margin: 20px 0 15px;">🏆 อันดับผู้ชนะ</h2>
+                <div id="podiumDisplay" class="podium"></div>
+
+                <h2 style="color: var(--primary); margin: 20px 0 15px;">📊 Leaderboard ทั้งหมด</h2>
+                <div class="table-wrapper">
+                    <table class="table-pro">
+                        <thead>
+                            <tr>
+                                <th>อันดับ</th>
+                                <th>ชื่อผู้เล่น</th>
+                                <th>คะแนน</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+
+                <h3 style="color: var(--primary); margin: 20px 0 15px;">📥 ส่งออกข้อมูล</h3>
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="exportCSV()">📊 CSV</button>
+                    <button class="btn btn-success" onclick="exportJSON()">📄 JSON</button>
+                    <button class="btn btn-secondary" onclick="printPage()">🖨️ พิมพ์</button>
+                </div>
+                <div id="resultsMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: DATA MANAGEMENT -->
+        <div id="dataPage" class="page">
+            <div class="container">
+                <button class="btn-back" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
+                
+                <h2 style="color: var(--primary); margin-bottom: 20px;">📊 จัดการข้อมูล</h2>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('tab1')">📋 สรุป</button>
+                    <button class="tab-btn" onclick="switchTab('tab2')">📝 รายละเอียด</button>
+                    <button class="tab-btn" onclick="switchTab('tab3')">⚙️ ตัวเลือก</button>
+                </div>
+
+                <!-- TAB 1: Summary -->
+                <div id="tab1" class="tab-content active">
+                    <div class="form-wrapper">
+                        <h3>👤 ข้อมูลผู้ดูแลระบบ</h3>
+                        <div id="devSummary" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <p>ยังไม่มีข้อมูล</p>
+                        </div>
+                        <button class="btn btn-warning" style="margin-top: 10px; width: 100%;" onclick="goToPage('registerPage')">✏️ แก้ไข</button>
+                    </div>
+
+                    <div class="form-wrapper">
+                        <h3>🎪 ข้อมูลกิจกรรม</h3>
+                        <div id="eventSummary" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <p>ยังไม่มีข้อมูล</p>
+                        </div>
+                        <button class="btn btn-warning" style="margin-top: 10px; width: 100%;" onclick="goToPage('registerPage')">✏️ แก้ไข</button>
+                    </div>
+
+                    <div class="form-wrapper">
+                        <h3>📊 สถิติ</h3>
+                        <p><strong>ผู้เล่นทั้งหมด:</strong> <span id="statPlayers">0</span> คน</p>
+                        <p><strong>ประตูทั้งหมด:</strong> 12 ประตู</p>
+                        <p><strong>ผลการแข่งขัน:</strong> <span id="statResults">0</span> รายการ</p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: Details -->
+                <div id="tab2" class="tab-content">
+                    <div class="form-wrapper">
+                        <h3>👥 รายชื่อผู้เล่น</h3>
+                        <div id="playersList" style="padding: 15px; background: #f8f9fa; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+                            <p>ยังไม่มีรายชื่อผู้เล่น</p>
+                        </div>
+                    </div>
+
+                    <div class="form-wrapper">
+                        <h3>📊 คะแนนผู้เล่น</h3>
+                        <div class="table-wrapper">
+                            <table class="table-pro">
+                                <thead>
+                                    <tr>
+                                        <th>ผู้เล่น</th>
+                                        <th>คะแนน</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scoresTable">
+                                    <tr><td colspan="2">ไม่มีข้อมูล</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: Options -->
+                <div id="tab3" class="tab-content">
+                    <div class="form-wrapper">
+                        <h3>💾 ข้อมูลสำรอง</h3>
+                        <button class="btn btn-success" style="width: 100%; margin-bottom: 10px;" onclick="downloadBackup()">📥 ดาวน์โหลดข้อมูล</button>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="uploadBackup()">📤 อัปโหลดข้อมูล</button>
+                    </div>
+
+                    <div class="form-wrapper">
+                        <h3>⚠️ อันตราย</h3>
+                        <button class="btn btn-danger" style="width: 100%;" onclick="resetData()">🔄 รีเซ็ตข้อมูล</button>
+                    </div>
+                </div>
+
+                <div id="dataMessage" class="message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Buttons -->
+    <button id="whatsappBtn" class="float-btn" title="WhatsApp" onclick="openWhatsApp()">💬</button>
+    <button id="scrollTopBtn" class="float-btn" title="ขึ้นไปด้านบน" onclick="scrollToTop()">↑</button>
+
+    <script>
+        const STORAGE_KEY = 'woodball_v2_data';
+        const GATES = [
+            {g: 1, p: 4, d: 46}, {g: 2, p: 5, d: 85}, {g: 3, p: 3, d: 53},
+            {g: 4, p: 4, d: 70}, {g: 5, p: 3, d: 43}, {g: 6, p: 4, d: 58},
+            {g: 7, p: 4, d: 73}, {g: 8, p: 4, d: 55}, {g: 9, p: 5, d: 93},
+            {g: 10, p: 4, d: 46}, {g: 11, p: 4, d: 53}, {g: 12, p: 4, d: 62}
+        ];
+
+        let state = {
+            dev: null,
+            event: null,
+            players: [],
+            scores: []
+        };
+
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+        function load() { const data = localStorage.getItem(STORAGE_KEY); if (data) state = JSON.parse(data); }
+        function goToPage(p) { document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active')); document.getElementById(p).classList.add('active'); window.scrollTo({top: 0}); }
+        function msg(id, text, type) { const e = document.getElementById(id); if (!e) return; e.textContent = text; e.className = `message show ${type}`; if (type==='success') setTimeout(() => e.classList.remove('show'), 3000); }
+        function toggleMenu() { /* stub */ }
+        
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('devName').value.trim();
+            const phone = document.getElementById('devPhone').value.trim();
+            const email = document.getElementById('devEmail').value.trim();
+            const ename = document.getElementById('eventName').value.trim();
+            const venue = document.getElementById('eventVenue').value.trim();
+            const date = document.getElementById('eventDate').value;
+            const cat = document.getElementById('eventCategory').value;
+
+            if (!name || !phone || !ename || !venue || !date) {
+                msg('registerMessage', '❌ กรุณากรอกข้อมูลที่จำเป็น', 'error');
+                return;
+            }
+
+            state.dev = { name, phone, email: email || null };
+            state.event = { name: ename, venue, date, category: cat || 'ทั่วไป' };
+            save();
+            msg('registerMessage', '✓ บันทึกเรียบร้อยแล้ว', 'success');
+            renderSummary();
+            setTimeout(() => goToPage('scoreCardPage'), 800);
+        }
+
+        function increasePlayer() { const inp = document.getElementById('playerCount'); inp.value = Math.min(Number(inp.value) + 1, 12); }
+        function decreasePlayer() { const inp = document.getElementById('playerCount'); inp.value = Math.max(Number(inp.value) - 1, 2); }
+
+        function generatePlayers() {
+            const cnt = Math.max(2, Math.min(12, Number(document.getElementById('playerCount').value || 4)));
+            const container = document.getElementById('playerNamesContainer');
+            container.innerHTML = '';
+            for (let i = 1; i <= cnt; i++) {
+                const div = document.createElement('div');
+                div.className = 'player-input-group';
+                div.innerHTML = `<label>👤 ผู้เล่นคนที่ ${i}</label><input type="text" id="player${i}" placeholder="ชื่อผู้เล่น">`;
+                container.appendChild(div);
+            }
+
+            let headers = '';
+            for (let i = 1; i <= cnt; i++) headers += `<th>P${i}</th>`;
+            document.getElementById('playerColsHeader').innerHTML = headers;
+
+            const tbody = document.getElementById('scoreTableBody');
+            tbody.innerHTML = '';
+            GATES.forEach(g => {
+                const row = document.createElement('tr');
+                let html = `<td><strong>${g.g}</strong></td><td>${g.p}</td><td>${g.d}</td>`;
+                for (let i = 1; i <= cnt; i++) {
+                    html += `<td><input type="number" min="0" max="99" value="0" data-p="${i}" data-g="${g.g}"></td>`;
+                }
+                row.innerHTML = html;
+                tbody.appendChild(row);
+            });
+
+            const tot = document.createElement('tr');
+            tot.style.background = '#e8f5e9';
+            tot.style.fontWeight = 'bold';
+            let tothtml = '<td colspan="3">📊 รวม</td>';
+            for (let i = 1; i <= cnt; i++) {
+                tothtml += `<td class="total-${i}">0</td>`;
+            }
+            tot.innerHTML = tothtml;
+            tbody.appendChild(tot);
+
+            document.querySelectorAll('input[data-g]').forEach(inp => inp.addEventListener('input', calcTotals));
+        }
+
+        function calcTotals() {
+            const cnt = Number(document.getElementById('playerCount').value || 4);
+            for (let i = 1; i <= cnt; i++) {
+                const sum = Array.from(document.querySelectorAll(`input[data-p="${i}"]`)).reduce((s, inp) => s + Number(inp.value || 0), 0);
+                const cell = document.querySelector(`.total-${i}`);
+                if (cell) cell.textContent = sum;
+            }
+        }
+
+        function calculateTotals() { calcTotals(); msg('scoreMessage', '✓ คำนวณเรียบร้อยแล้ว', 'success'); }
+
+        function submitScores() {
+            const cnt = Number(document.getElementById('playerCount').value || 4);
+            const players = [];
+            for (let i = 1; i <= cnt; i++) {
+                const name = document.getElementById(`player${i}`).value.trim();
+                if (!name) { msg('scoreMessage', `❌ กรอกชื่อผู้เล่นคนที่ ${i}`, 'error'); return; }
+                players.push(name);
+            }
+
+            const totals = {};
+            players.forEach((_, i) => totals[i+1] = 0);
+            document.querySelectorAll('input[data-g]').forEach(inp => {
+                const p = Number(inp.dataset.p);
+                totals[p] += Number(inp.value || 0);
+            });
+
+            state.players = players;
+            state.scores = players.map((name, i) => ({ name, total: totals[i+1] }));
+            save();
+            displayResults();
+            msg('scoreMessage', '✓ บันทึกเรียบร้อยแล้ว', 'success');
+            setTimeout(() => goToPage('resultsPage'), 600);
+        }
+
+        function displayResults() {
+            if (!state.scores.length) return;
+
+            const sorted = [...state.scores].sort((a, b) => a.total - b.total);
+            const tbody = document.getElementById('resultsTableBody');
+            const podium = document.getElementById('podiumDisplay');
+            const eventInfo = document.getElementById('eventInfoDisplay');
+
+            eventInfo.style.display = 'block';
+            if (state.event && state.dev) {
+                eventInfo.innerHTML = `
+                    <p><strong>🏆 กิจกรรม:</strong> ${state.event.name}</p>
+                    <p><strong>📍 สถานที่:</strong> ${state.event.venue}</p>
+                    <p><strong>📅 วันที่:</strong> ${new Date(state.event.date).toLocaleDateString('th-TH')}</p>
+                    <p><strong>👨‍💻 ผู้ดูแล:</strong> ${state.dev.name}</p>
+                `;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            podium.innerHTML = sorted.slice(0, 3).map((item, i) => `
+                <div class="podium-card ${i===0 ? 'gold' : i===1 ? 'silver' : 'bronze'}">
+                    <div class="medal">${medals[i]}</div>
+                    <div class="name">${item.name}</div>
+                    <div class="score">${item.total}</div>
+                </div>
+            `).join('');
+
+            tbody.innerHTML = sorted.map((item, i) => {
+                let cls = '', medal = '🎖️', status = 'ผ่าน';
+                if (i === 0) { cls = 'rank-1'; medal = '🥇'; status = 'Champion'; }
+                else if (i === 1) { cls = 'rank-2'; medal = '🥈'; status = 'Runner-up'; }
+                else if (i === 2) { cls = 'rank-3'; medal = '🥉'; status = '3rd'; }
+                return `<tr class="${cls}"><td>${medal} ${i+1}</td><td>${item.name}</td><td><strong>${item.total}</strong></td><td>${status}</td></tr>`;
+            }).join('');
+
+            updateStats();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function renderSummary() {
+            const dev = document.getElementById('devSummary');
+            const ev = document.getElementById('eventSummary');
+            if (state.dev) {
+                dev.innerHTML = `<p><strong>ชื่อ:</strong> ${state.dev.name}</p><p><strong>โทร:</strong> ${state.dev.phone}</p>`;
+            }
+            if (state.event) {
+                ev.innerHTML = `<p><strong>กิจกรรม:</strong> ${state.event.name}</p><p><strong>สถานที่:</strong> ${state.event.venue}</p><p><strong>วันที่:</strong> ${new Date(state.event.date).toLocaleDateString('th-TH')}</p>`;
+            }
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('totalPlayers').textContent = state.players.length;
+            document.getElementById('totalRecords').textContent = state.scores.length;
+            document.getElementById('statPlayers').textContent = state.players.length;
+            document.getElementById('statResults').textContent = state.scores.length;
+
+            const playersList = document.getElementById('playersList');
+            if (state.players.length) {
+                playersList.innerHTML = state.players.map((p, i) => `<div style="padding: 8px; background: white; margin: 5px 0; border-radius: 6px;">${i+1}. ${p}</div>`).join('');
+            }
+
+            const scorestable = document.getElementById('scoresTable');
+            if (state.scores.length) {
+                scorestable.innerHTML = state.scores.map(s => `<tr><td>${s.name}</td><td>${s.total}</td></tr>`).join('');
+            }
+        }
+
+        function exportCSV() {
+            if (!state.scores.length) { msg('resultsMessage', '❌ ไม่มีข้อมูล', 'error'); return; }
+            const rows = [['อันดับ', 'ชื่อ', 'คะแนน'], ...state.scores.map((s, i) => [i+1, s.name, s.total])];
+            const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+            const blob = new Blob(['\ufeff'+csv], {type: 'text/csv;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `woodball_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            msg('resultsMessage', '✓ ดาวน์โหลดสำเร็จ', 'success');
+        }
+
+        function exportJSON() {
+            const data = { dev: state.dev, event: state.event, players: state.players, scores: state.scores };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json;charset=utf-8;'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `woodball_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            msg('resultsMessage', '✓ ดาวน์โหลดสำเร็จ', 'success');
+        }
+
+        function downloadBackup() { exportJSON(); }
+
+        function uploadBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        const data = JSON.parse(evt.target.result);
+                        state = data;
+                        save();
+                        renderSummary();
+                        updateStats();
+                        msg('dataMessage', '✓ อัปโหลดสำเร็จ', 'success');
+                    } catch {
+                        msg('dataMessage', '❌ ไฟล์ไม่ถูกต้อง', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function resetData() {
+            if (!confirm('⚠️ ต้องการรีเซ็ตข้อมูลหรือไม่?')) return;
+            state = { dev: null, event: null, players: [], scores: [] };
+            save();
+            renderSummary();
+            updateStats();
+            msg('dataMessage', '✓ รีเซ็ตเรียบร้อยแล้ว', 'success');
+        }
+
+        function printPage() { window.print(); }
+
+        function openWhatsApp() {
+            const phone = state.dev?.phone || '66999999999';
+            const clean = phone.replace(/[^0-9]/g, '').replace(/^0/, '66');
+            window.open(`https://wa.me/${clean}?text=สวัสดีครับ`, '_blank');
+        }
+
+        function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
+            btn.classList.toggle('show', window.scrollY > 250);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            load();
+            generatePlayers();
+            renderSummary();
+            updateStats();
+        });
+    </script>
+</body>
+</html>
