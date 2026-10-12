@@ -2,24 +2,42 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ระบบจัดการการแข่งขัน Woodball - Professional Scoring System">
-    <meta name="keywords" content="Woodball, Score Card, Competition Management">
-    <title>WOODBALL MANAGEMENT SYSTEM v2.0 - ระบบจัดการการแข่งขัน</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Woodball System">
+    <meta name="description" content="ระบบจัดการการแข่งขัน Woodball - Professional Event Management">
+    <title>🌲 WOODBALL SYSTEM v2.0 - ระบบจัดการการแข่งขัน</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🌲</text></svg>">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style-pro.css">
 </head>
 <body>
+    <!-- Status Bar Spacer for iOS -->
+    <div style="height: 0; position: fixed; top: 0; width: 100%; background: #2c3e50; z-index: 10000;"></div>
+
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
                 <span class="logo-icon">🌲</span>
-                <span class="logo-text">WOODBALL SYSTEM</span>
+                <span class="logo-text">WOODBALL</span>
             </div>
-            <div class="nav-version">v2.0 Professional</div>
+            <div class="nav-right">
+                <span class="nav-version">v2.0</span>
+                <button class="nav-menu-btn" onclick="toggleMenu()" title="เมนู">☰</button>
+            </div>
         </div>
     </nav>
+
+    <!-- Quick Menu Panel -->
+    <div id="quickMenu" class="quick-menu">
+        <button onclick="goToPage('menuPage'); toggleMenu()">📊 หน้าหลัก</button>
+        <button onclick="goToPage('registerPage'); toggleMenu()">📝 ลงทะเบียน</button>
+        <button onclick="goToPage('scoreCardPage'); toggleMenu()">🎯 กรอกคะแนน</button>
+        <button onclick="goToPage('resultsPage'); toggleMenu()">🏅 ผลการแข่งขัน</button>
+        <button onclick="goToPage('dataPage'); toggleMenu()">📊 จัดการข้อมูล</button>
+    </div>
 
     <div id="app">
         <!-- ==================== PAGE 1: MAIN MENU ==================== -->
@@ -27,16 +45,18 @@
             <div class="container hero-container">
                 <div class="hero-section">
                     <div class="hero-content">
-                        <h1 class="hero-title">🏆 WOODBALL COMPETITION SYSTEM 🏆</h1>
-                        <p class="hero-subtitle">ระบบจัดการการแข่งขัน Woodball แบบมืออาชีพ</p>
+                        <div class="hero-icon">🏆</div>
+                        <h1 class="hero-title">WOODBALL<br>SYSTEM 2.0</h1>
+                        <p class="hero-subtitle">ระบบจัดการการแข่งขัน<br>เวอร์ชันจัดค่ายจริง</p>
+                        
                         <div class="hero-stats">
                             <div class="stat-box">
                                 <span class="stat-number" id="totalPlayers">0</span>
                                 <span class="stat-label">ผู้เล่น</span>
                             </div>
                             <div class="stat-box">
-                                <span class="stat-number" id="totalEvents">0</span>
-                                <span class="stat-label">กิจกรรม</span>
+                                <span class="stat-number" id="totalGates">12</span>
+                                <span class="stat-label">ประตู</span>
                             </div>
                             <div class="stat-box">
                                 <span class="stat-number" id="totalRecords">0</span>
@@ -46,50 +66,67 @@
                     </div>
                 </div>
 
+                <div class="quick-actions">
+                    <button class="action-btn primary" onclick="goToPage('registerPage')">
+                        <span class="action-icon">✓</span>
+                        <span class="action-text">เริ่มต้นใหม่</span>
+                    </button>
+                    <button class="action-btn success" onclick="goToPage('scoreCardPage')">
+                        <span class="action-icon">🎯</span>
+                        <span class="action-text">กรอกคะแนน</span>
+                    </button>
+                </div>
+
                 <div class="menu-grid">
                     <div class="menu-card" onclick="goToPage('registerPage')">
                         <div class="menu-icon">📝</div>
-                        <h3>ลงทะเบียนผู้ใช้</h3>
-                        <p>เข้าสู่ระบบครั้งแรก</p>
-                        <span class="menu-arrow">→</span>
+                        <h3>ลงทะเบียน</h3>
+                        <p>ผู้พัฒนา & กิจกรรม</p>
                     </div>
 
                     <div class="menu-card" onclick="goToPage('scoreCardPage')">
                         <div class="menu-icon">🎯</div>
                         <h3>กรอกคะแนน</h3>
-                        <p>บันทึกคะแนนผู้เล่น</p>
-                        <span class="menu-arrow">→</span>
+                        <p>Score Card</p>
                     </div>
 
                     <div class="menu-card" onclick="goToPage('resultsPage')">
                         <div class="menu-icon">🏅</div>
                         <h3>ผลการแข่งขัน</h3>
-                        <p>ดูอันดับและผลลัพธ์</p>
-                        <span class="menu-arrow">→</span>
+                        <p>Leaderboard</p>
                     </div>
 
                     <div class="menu-card" onclick="goToPage('dataPage')">
                         <div class="menu-icon">📊</div>
                         <h3>จัดการข้อมูล</h3>
-                        <p>ดูและปรับปรุงข้อมูล</p>
-                        <span class="menu-arrow">→</span>
+                        <p>Data Manager</p>
+                    </div>
+                </div>
+
+                <div class="info-banner">
+                    <div class="info-box">
+                        <span class="info-icon">ℹ️</span>
+                        <div class="info-content">
+                            <p><strong>เคล็ดลับ:</strong> ระบบนี้ใช้งานได้แบบ offline โดยข้อมูลจะถูกเก็บไว้ในเครื่อง</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== PAGE 2: REGISTRATION ==================== -->
+        <!-- ==================== PAGE 2: REGISTRATION (ADVANCED) ==================== -->
         <div id="registerPage" class="page">
             <div class="container form-container">
                 <div class="page-header">
                     <button class="btn-back" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
-                    <h2>📝 ลงทะเบียนผู้ใช้ระบบ</h2>
+                    <h2>📝 ตั้งค่าระบบการแข่งขัน</h2>
                 </div>
 
                 <div class="form-wrapper">
                     <form id="registerForm" class="form-pro">
+                        <!-- Developer Info -->
                         <fieldset>
-                            <legend>👤 ข้อมูลผู้พัฒนาระบบ</legend>
+                            <legend>👤 ข้อมูลผู้ดูแลระบบ</legend>
                             
                             <div class="form-row">
                                 <div class="form-group">
@@ -106,14 +143,15 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="devEmail">อีเมล (optional)</label>
+                                <label for="devEmail">อีเมล (ไม่บังคับ)</label>
                                 <input type="email" id="devEmail" placeholder="example@email.com">
                                 <span class="input-icon">✉️</span>
                             </div>
                         </fieldset>
 
+                        <!-- Event Info -->
                         <fieldset>
-                            <legend>🎪 ข้อมูลกิจกรรมการแข่งขัน</legend>
+                            <legend>🎪 ข้อมูลการแข่งขัน</legend>
                             
                             <div class="form-group">
                                 <label for="eventName">ชื่อกิจกรรม *</label>
@@ -135,23 +173,40 @@
                                 </div>
                             </div>
 
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="eventCategory">หมวดหมู่การแข่งขัน</label>
+                                    <select id="eventCategory">
+                                        <option value="">-- เลือกหมวดหมู่ --</option>
+                                        <option value="ผู้บริหาร">👔 ผู้บริหาร</option>
+                                        <option value="พนักงาน">💼 พนักงาน</option>
+                                        <option value="นักเรียน">🎓 นักเรียน</option>
+                                        <option value="นักศึกษา">📚 นักศึกษา</option>
+                                        <option value="ทั่วไป">🎯 ทั่วไป</option>
+                                        <option value="อื่นๆ">❓ อื่นๆ</option>
+                                    </select>
+                                    <span class="input-icon">📋</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="participantCount">จำนวนผู้เข้าร่วมทั้งหมด</label>
+                                    <input type="number" id="participantCount" min="1" max="999" value="10" placeholder="จำนวนผู้เข้าร่วม">
+                                    <span class="input-icon">👥</span>
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label for="eventCategory">หมวดหมู่การแข่งขัน</label>
-                                <select id="eventCategory">
-                                    <option value="">-- เลือกหมวดหมู่ --</option>
-                                    <option value="ผู้บริหาร">ผู้บริหาร</option>
-                                    <option value="พนักงาน">พนักงาน</option>
-                                    <option value="นักเรียน">นักเรียน</option>
-                                    <option value="ทั่วไป">ทั่วไป</option>
-                                    <option value="อื่นๆ">อื่นๆ</option>
-                                </select>
-                                <span class="input-icon">📋</span>
+                                <label for="eventNotes">หมายเหตุ / ข้อมูลเพิ่มเติม</label>
+                                <textarea id="eventNotes" placeholder="เช่น ลำดับประตู, กฎเพิ่มเติม, เอกสารประกอบ" rows="3" style="width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 6px; font-family: inherit; font-size: 0.95rem; resize: vertical;"></textarea>
                             </div>
                         </fieldset>
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary btn-large">
-                                ✓ บันทึกข้อมูลและเริ่มต้น
+                                ✓ บันทึกและเริ่มต้นระบบ
+                            </button>
+                            <button type="reset" class="btn btn-secondary" onclick="clearFormData()">
+                                🔄 ล้างข้อมูล
                             </button>
                         </div>
                     </form>
@@ -161,7 +216,7 @@
             </div>
         </div>
 
-        <!-- ==================== PAGE 3: SCORE CARD ==================== -->
+        <!-- ==================== PAGE 3: SCORE CARD (ENHANCED) ==================== -->
         <div id="scoreCardPage" class="page">
             <div class="container score-container">
                 <div class="page-header">
@@ -171,22 +226,29 @@
 
                 <div class="score-setup">
                     <div class="setup-box">
-                        <label for="playerCount">จำนวนผู้เล่น (2-12 คน)</label>
-                        <div class="setup-controls">
-                            <button class="btn-num" onclick="decreasePlayerCount()">−</button>
-                            <input type="number" id="playerCount" min="2" max="12" value="4">
-                            <button class="btn-num" onclick="increasePlayerCount()">+</button>
-                            <button class="btn btn-success" onclick="generatePlayerInputs()">
-                                🔄 สร้างฟอร์ม
-                            </button>
+                        <div class="setup-header">
+                            <label for="playerCount">จำนวนผู้เล่น (2-12 คน)</label>
+                            <span class="setup-value" id="playerCountDisplay">4 คน</span>
                         </div>
+                        <div class="setup-controls">
+                            <button class="btn-num" onclick="decreasePlayerCount()" title="ลด">−</button>
+                            <input type="number" id="playerCount" min="2" max="12" value="4">
+                            <button class="btn-num" onclick="increasePlayerCount()" title="เพิ่ม">+</button>
+                        </div>
+                        <button class="btn btn-success" style="width: 100%; margin-top: 10px;" onclick="generatePlayerInputs()">
+                            🔄 สร้างฟอร์มผู้เล่น
+                        </button>
                     </div>
                 </div>
 
                 <div id="playerNamesContainer" class="player-grid-pro"></div>
 
                 <div class="score-card-section">
-                    <h3>⛳ กรอกคะแนนต่อประตู (Gate)</h3>
+                    <div class="section-header">
+                        <h3>⛳ กรอกคะแนนต่อประตู (Gate)</h3>
+                        <button class="btn btn-small btn-info" onclick="autoFillScores()">⚡ เติมตัวอย่าง</button>
+                    </div>
+                    
                     <div class="table-wrapper">
                         <table id="scoreTable" class="table-pro">
                             <thead>
@@ -207,7 +269,7 @@
                         🧮 คำนวณคะแนน
                     </button>
                     <button type="submit" onclick="submitScoreCard()" class="btn btn-primary btn-large">
-                        💾 บันทึกคะแนนและดูผลลัพธ์
+                        💾 บันทึกและดูผลลัพธ์
                     </button>
                 </div>
 
@@ -215,23 +277,25 @@
             </div>
         </div>
 
-        <!-- ==================== PAGE 4: RESULTS ==================== -->
+        <!-- ==================== PAGE 4: RESULTS (PROFESSIONAL) ==================== -->
         <div id="resultsPage" class="page">
             <div class="container results-container">
                 <div class="page-header">
                     <button class="btn-back" onclick="goToPage('menuPage')">← ย้อนกลับ</button>
-                    <h2>🏅 ผลการแข่งขัน WOODBALL</h2>
+                    <h2>🏅 ผลการแข่งขัน & LEADERBOARD</h2>
                 </div>
 
                 <div id="eventInfoDisplay" class="event-info-card"></div>
 
-                <div class="results-filters">
-                    <button class="btn btn-primary" onclick="sortAndDisplayResults()">
-                        🔄 อัปเดตผลการแข่งขัน
-                    </button>
-                    <button class="btn btn-info" onclick="toggleDetailView()">
-                        👁️ ดูรายละเอียด
-                    </button>
+                <div class="results-controls">
+                    <div class="control-group">
+                        <button class="btn btn-primary" onclick="sortAndDisplayResults()">
+                            🔄 อัปเดตผลการแข่งขัน
+                        </button>
+                        <button class="btn btn-info" onclick="toggleDetailView()">
+                            👁️ รายละเอียด
+                        </button>
+                    </div>
                 </div>
 
                 <div class="table-wrapper">
@@ -240,20 +304,25 @@
                             <tr>
                                 <th class="col-rank">อันดับ</th>
                                 <th class="col-name">ชื่อผู้เล่น</th>
-                                <th class="col-score">คะแนนรวม</th>
+                                <th class="col-score">คะแนน</th>
                                 <th class="col-status">สถานะ</th>
-                                <th class="col-action">ไฮไลท์</th>
+                                <th class="col-action">รางวัล</th>
                             </tr>
                         </thead>
                         <tbody id="resultsTableBody"></tbody>
                     </table>
                 </div>
 
+                <div class="podium-section">
+                    <h3>🏆 อันดับ 3 อันดับแรก</h3>
+                    <div id="podiumDisplay" class="podium"></div>
+                </div>
+
                 <div class="export-section">
                     <h3>📥 ส่งออกข้อมูล</h3>
                     <div class="export-buttons">
                         <button class="btn btn-export" onclick="exportToCSV()">
-                            📊 CSV (Excel)
+                            📊 CSV
                         </button>
                         <button class="btn btn-export" onclick="downloadHTML()">
                             📄 HTML
@@ -271,7 +340,7 @@
             </div>
         </div>
 
-        <!-- ==================== PAGE 5: DATA MANAGEMENT ==================== -->
+        <!-- ==================== PAGE 5: DATA MANAGEMENT (PROFESSIONAL) ==================== -->
         <div id="dataPage" class="page">
             <div class="container data-container">
                 <div class="page-header">
@@ -279,34 +348,105 @@
                     <h2>📊 จัดการข้อมูล</h2>
                 </div>
 
-                <div class="data-sections">
-                    <div class="data-card">
-                        <h3>📋 ข้อมูลผู้พัฒนาระบบ</h3>
-                        <div id="devInfoDisplay" class="info-display"></div>
-                        <button class="btn btn-warning" onclick="editDevInfo()">✏️ แก้ไข</button>
-                    </div>
-
-                    <div class="data-card">
-                        <h3>🎪 ข้อมูลกิจกรรม</h3>
-                        <div id="eventInfoData" class="info-display"></div>
-                        <button class="btn btn-warning" onclick="editEventInfo()">✏️ แก้ไข</button>
+                <div class="tabs-container">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('tab-summary')">📋 สรุป</button>
+                        <button class="tab-btn" onclick="switchTab('tab-details')">📝 รายละเอียด</button>
+                        <button class="tab-btn" onclick="switchTab('tab-export')">📤 ส่งออก</button>
                     </div>
                 </div>
 
-                <div class="data-card">
-                    <h3>👥 รายชื่อผู้เล่น</h3>
-                    <div id="playersListDisplay" class="players-list"></div>
+                <!-- Summary Tab -->
+                <div id="tab-summary" class="tab-content active">
+                    <div class="data-sections">
+                        <div class="data-card">
+                            <h3>📋 ข้อมูลผู้ดูแลระบบ</h3>
+                            <div id="devInfoDisplay" class="info-display"></div>
+                            <button class="btn btn-warning" onclick="editDevInfo()">✏️ แก้ไข</button>
+                        </div>
+
+                        <div class="data-card">
+                            <h3>🎪 ข้อมูลกิจกรรม</h3>
+                            <div id="eventInfoData" class="info-display"></div>
+                            <button class="btn btn-warning" onclick="editEventInfo()">✏️ แก้ไข</button>
+                        </div>
+
+                        <div class="data-card">
+                            <h3>📊 สถิติการแข่งขัน</h3>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-title">ผู้เล่นทั้งหมด</span>
+                                    <span class="stat-value" id="statTotalPlayers">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-title">ประตูทั้งหมด</span>
+                                    <span class="stat-value">12</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-title">ผลการแข่งขัน</span>
+                                    <span class="stat-value" id="statResultsCount">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-title">ความสมบูรณ์</span>
+                                    <span class="stat-value" id="statCompletion">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="dangerous-section">
-                    <h3>⚠️ การจัดการอันตราย</h3>
-                    <div class="danger-buttons">
-                        <button class="btn btn-danger" onclick="exportAllData()">
-                            📤 ส่งออกข้อมูลทั้งหมด
-                        </button>
-                        <button class="btn btn-danger" onclick="resetAllData()">
-                            🔄 รีเซ็ตข้อมูล
-                        </button>
+                <!-- Details Tab -->
+                <div id="tab-details" class="tab-content">
+                    <div class="data-card">
+                        <h3>👥 รายชื่อผู้เล่น</h3>
+                        <div id="playersListDisplay" class="players-list"></div>
+                    </div>
+
+                    <div class="data-card">
+                        <h3>📊 รายละเอียดคะแนน</h3>
+                        <div class="table-wrapper">
+                            <table class="table-pro">
+                                <thead>
+                                    <tr>
+                                        <th>ผู้เล่น</th>
+                                        <th>คะแนนรวม</th>
+                                        <th>ระดับ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scoresDetailDisplay"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Tab -->
+                <div id="tab-export" class="tab-content">
+                    <div class="data-card">
+                        <h3>📤 ส่งออกและสำรองข้อมูล</h3>
+                        <div class="export-grid">
+                            <button class="btn btn-primary" onclick="exportAllData()">
+                                💾 ส่งออกข้อมูลทั้งหมด (JSON)
+                            </button>
+                            <button class="btn btn-success" onclick="downloadDataAsZip()">
+                                📦 ดาวน์โหลดแพ็คเก็จสมบูรณ์
+                            </button>
+                            <button class="btn btn-info" onclick="shareResults()">
+                                📤 แชร์ผลการแข่งขัน
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="dangerous-section">
+                        <h3>⚠️ การจัดการอันตราย</h3>
+                        <p style="color: #666; margin-bottom: 15px;">⚠️ การดำเนินการเหล่านี้ไม่สามารถยกเลิกได้ กรุณาใช้อย่างระมัดระวัง</p>
+                        <div class="danger-buttons">
+                            <button class="btn btn-danger" onclick="resetAllData()">
+                                🔄 รีเซ็ตข้อมูลทั้งหมด
+                            </button>
+                            <button class="btn btn-warning" onclick="backupCurrentData()">
+                                🔒 สำรองข้อมูลปัจจุบัน
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -315,15 +455,17 @@
         </div>
     </div>
 
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/" id="whatsappBtn" class="whatsapp-btn" title="ติดต่อ WhatsApp" target="_blank">
-        <span class="whatsapp-icon">💬</span>
+    <!-- Floating Action Buttons -->
+    <a href="https://wa.me/" id="whatsappBtn" class="floating-btn whatsapp-btn" title="ติดต่อ WhatsApp" target="_blank">
+        <span>💬</span>
     </a>
 
-    <!-- Scroll to Top Button -->
-    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="ขึ้นไปด้านบน">
+    <button id="scrollTopBtn" class="floating-btn scroll-top-btn" onclick="scrollToTop()" title="ขึ้นไปด้านบน">
         ↑
     </button>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner"></div>
 
     <script src="script-pro.js"></script>
 </body>
